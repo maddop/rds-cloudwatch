@@ -3,49 +3,49 @@ locals {
   // Default alarm configurations
   default_alarms = {
     CPUUtilization = {
-      metric_name = "CPUUtilization"
-      threshold   = 80
-      period      = 300
+      metric_name  = "CPUUtilization"
+      threshold    = 80
+      period       = 300
       eval_periods = 5
-      statistic   = "Average"
-      operator    = "GreaterThanThreshold"
-      description = "CPU utilization is high."
+      statistic    = "Average"
+      operator     = "GreaterThanThreshold"
+      description  = "CPU utilization is high."
     }
     FreeStorageSpace = {
-      metric_name = "FreeStorageSpace"
-      threshold   = 10737418240 // 10 GB in bytes
-      period      = 300
+      metric_name  = "FreeStorageSpace"
+      threshold    = 10737418240 // 10 GB in bytes
+      period       = 300
       eval_periods = 5
-      statistic   = "Average"
-      operator    = "LessThanThreshold"
-      description = "Free storage space is low."
+      statistic    = "Average"
+      operator     = "LessThanThreshold"
+      description  = "Free storage space is low."
     }
     DatabaseConnections = {
-      metric_name = "DatabaseConnections"
-      threshold   = 100
-      period      = 300
+      metric_name  = "DatabaseConnections"
+      threshold    = 100
+      period       = 300
       eval_periods = 5
-      statistic   = "Average"
-      operator    = "GreaterThanThreshold"
-      description = "Database connections are high."
+      statistic    = "Average"
+      operator     = "GreaterThanThreshold"
+      description  = "Database connections are high."
     }
     ReadIOPS = {
-      metric_name = "ReadIOPS"
-      threshold   = 1000
-      period      = 300
+      metric_name  = "ReadIOPS"
+      threshold    = 1000
+      period       = 300
       eval_periods = 5
-      statistic   = "Average"
-      operator    = "GreaterThanThreshold"
-      description = "Read IOPS are high."
+      statistic    = "Average"
+      operator     = "GreaterThanThreshold"
+      description  = "Read IOPS are high."
     }
     WriteIOPS = {
-      metric_name = "WriteIOPS"
-      threshold   = 1000
-      period      = 300
+      metric_name  = "WriteIOPS"
+      threshold    = 1000
+      period       = 300
       eval_periods = 5
-      statistic   = "Average"
-      operator    = "GreaterThanThreshold"
-      description = "Write IOPS are high."
+      statistic    = "Average"
+      operator     = "GreaterThanThreshold"
+      description  = "Write IOPS are high."
     }
   }
 

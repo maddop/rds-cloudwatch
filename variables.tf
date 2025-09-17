@@ -20,12 +20,12 @@ variable "rds_instances_config" {
     engine_type         = string
     notification_method = string
     alarms = optional(map(object({
-      threshold     = number
-      period        = optional(number, 300)
-      eval_periods  = optional(number, 5)
-      statistic     = optional(string, "Average")
-      operator      = optional(string, "GreaterThanThreshold")
-      description   = optional(string, "Alarm description") 
+      threshold    = number
+      period       = optional(number, 300)
+      eval_periods = optional(number, 5)
+      statistic    = optional(string, "Average")
+      operator     = optional(string, "GreaterThanThreshold")
+      description  = optional(string, "Alarm description")
     })), {})
   }))
   default = {}
