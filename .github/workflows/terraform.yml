@@ -1,0 +1,92 @@
+name: 'Terraform CI/CD'
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  IAM_ROLE_ARN: arn:aws:iam::195275674418:role/maddocloudwatch-GitHubActionsDeployer 
+
+permissions:
+  id-token: write # This is required for aws oidc connection
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    env:
+      # this is needed for the terraform apply when running in a pipeline
+      TF_VAR_aws_account_number: ${{ secrets.AWS_ACCOUNT_NUMBER }}
+      TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
+      TF_VAR_environment: "prod" # Or dynamically set this based on the branch
+      TF_VAR_rds_instances_config: ${{ secrets.RDS_INSTANCES_CONFIG }}
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ env.IAM_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }} #change to your region
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.5
+
+      - name: Terraform Init
+        id: init
+        run: terraform -chdir=./cloudwatch init
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform -chdir=./cloudwatch fmt -check
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform -chdir=./cloudwatch plan -no-color
+        if: github.event_name == 'pull_request'
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: ${{ github.event_name }}*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform -chdir=./cloudwatch apply -auto-approve -input=false

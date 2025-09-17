@@ -23,4 +23,3 @@ module "rds_alarm" {
   alarm_config        = each.value
   sns_topic_arns      = { for k, v in aws_sns_topic.rds_alerts : k => v.arn }
 }
-
