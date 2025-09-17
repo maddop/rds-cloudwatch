@@ -18,14 +18,6 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    env:
-      # this is needed for the terraform apply when running in a pipeline
-      TF_VAR_aws_account_number: ${{ secrets.AWS_ACCOUNT_NUMBER }}
-      TF_VAR_aws_region: ${{ secrets.AWS_REGION }}
-      TF_VAR_environment: "prod" # Or dynamically set this based on the branch
-      TF_VAR_rds_instances_config: ${{ secrets.RDS_INSTANCES_CONFIG }}
-
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -34,8 +26,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ env.IAM_ROLE_ARN }}
-          aws-region: ${{ secrets.AWS_REGION }} #change to your region
-
+          aws-region: eu-west-1
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
