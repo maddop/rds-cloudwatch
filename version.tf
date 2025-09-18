@@ -11,8 +11,8 @@ terraform {
 
   # Configure S3 backend for Terraform state management
   backend "s3" {
-    bucket       = var.tf_s3_bucket
-    key          = var.tf_s3_key
+     bucket       = "YOUR_TF_STATE_BUCKET"
+     key          = "YOUR_TF_STATE_KEY"
     region       = "eu-west-1" # State bucket should be in a fixed region
     encrypt      = true
     use_lockfile = true
