@@ -23,3 +23,11 @@ module "rds_alarm" {
   alarm_config        = each.value
   sns_topic_arns      = { for k, v in aws_sns_topic.rds_alerts : k => v.arn }
 }
+
+module "my_rds_instance_1" {
+  source     = "./modules/rds_instance"
+  identifier = "my-rds-instance-1"
+  username   = var.rds_master_username
+  password   = var.rds_master_password
+  db_name    = "mydb1"
+}

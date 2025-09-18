@@ -14,6 +14,16 @@ variable "environment" {
   type        = string
 }
 
+variable "tf_s3_bucket" {
+  description = "The S3 bucket name for storing Terraform state."
+  type        = string
+}
+variable "tf_s3_key" {
+  description = "The S3 key (path) for the Terraform state file."
+  type        = string
+}
+
+
 variable "rds_instances_config" {
   description = "A map of RDS instances to configure alarms for. The key is the RDS instance identifier."
   type = map(object({
@@ -29,4 +39,14 @@ variable "rds_instances_config" {
     })), {})
   }))
   default = {}
+}
+variable "rds_master_username" {
+  description = "Master username for RDS instances."
+  type        = string
+}
+
+variable "rds_master_password" {
+  description = "Master password for RDS instances."
+  type        = string
+  sensitive   = true
 }
